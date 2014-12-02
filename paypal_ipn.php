@@ -32,6 +32,7 @@ if($_POST)
         if (strcmp ($res, "VERIFIED") == 0)
         {
             $paymentstatus = $_POST['payment_status'];
+            $payeremail = $_POST['payer_email'];
 
             $conn = mysql_connect($dbhost,$dbusername,$dbpassword);
             if (!$conn)
@@ -46,67 +47,65 @@ if($_POST)
             (paypal_payment)
             VALUES
             ('$paymentstatus')";
-
-            if(!mysql_query($query))
-            {
-                echo "Could not connect..."
-            }
-            mysql_close($conn);
+            
+            //mysql_close($conn);
             
             
             
             //////////////  SEND EMAIL  //////////////
+            $query = mysqli_query($con,"SELECT * FROM ksapplication WHERE `email` OR `email_alt` = '" . $payeremail . "'");
+            if(mysql_query($query) == ($payeremail))
+            {
+
+                // the message
+                $message = while($row = mysqli_fetch_array($query))
+                {
+                    echo "<p>Name: " . $row['name'] . "</br>";
+                    echo "SSN: " . $row['ssn'] . "</br>";
+                    echo "DOB: " . $row['dob'] . "</br>";
+                    echo "Race: " . $row['race'] . "</br>";
+                    echo "Gender: " . $row['gender'] . "</br>";
+                    echo "Program: " . $row['program'] . "</br>";
+                    echo "Start Date:" . $row['start_date'] . "</br>";
+                    echo "Present Address: " . $row['present_address'] . "</br>";
+                    echo "City: " . $row['city'] . "</br>";
+                    echo "State: " . $row['state'] . "</br>";
+                    echo "Zip: " . $row['zip'] . "</br>";
+                    echo "Mobile: " . $row['mobile'] . "</br>";
+                    echo "Alt Phone: " . $row['phone_alt'] . "</br>";
+                    echo "Can we text: " . $row['txt'] . "</br>";
+                    echo "Email: " . $row['email'] . "</br>";
+                    echo "Alt Email: " . $row['email_alt'] . "</br>";
+                    echo "Education Level: " . $row['education_level'] . "</br>";
+                    echo "High School Name: " . $row['hs_name'] . "</br>";
+                    echo "High School City: " . $row['hs_city'] . "</br>";
+                    echo "Homeschooled (y or n): " . $row['homeschool'] . "</br>";
+                    echo "Homeschool Endorsed: " . $row['home_endorse'] . "</br>";
+                    echo "College Name: " . $row['college_name'] . "</br>";
+                    echo "College City: " . $row['college_city'] . "</br>";
+                    echo "Degree: " . $row['degree'] . "</br>";
+                    echo "Previously Attend Cosmo School: " . $row['previous_attend'] . "</br>";
+                    echo "Transfer Credits (y or n): " . $row['transfer'] . "</br>";
+                    echo "Cosmo School Name: " . $row['cs_name'] . "</br>";
+                    echo "Cosmo School City: " . $row['cs_city'] . "</br>";
+                    echo "Date Submitted: " . $row['date'] . "</br>";
+                    echo "Payment Status: " . $paymentstatus . "</br>";
+                    echo "ID: " . $row['id'] . "</p>";
+                }
+            }
             
-            $con=mysqli_connect("localhost","...","...","kennethshuler");
-            // Check connection
-            if (mysqli_connect_errno())
+            if(!mysql_query($query))
             {
-            echo "Failed to connect to database: " . mysqli_connect_error();
+                echo "Could not connect..."
             }
-
-            $result = mysqli_query($con,"SELECT * FROM ksapplication WHERE `email` OR `email_alt` = '" . ['payer_email'] . "'");
-
-            // the message
-            $message = while($row = mysqli_fetch_array($result))
-            {
-            echo "<p>Name: " . $row['name'] . "</br>";
-            echo "SSN: " . $row['ssn'] . "</br>";
-            echo "DOB: " . $row['dob'] . "</br>";
-            echo "Race: " . $row['race'] . "</br>";
-            echo "Gender: " . $row['gender'] . "</br>";
-            echo "Program: " . $row['program'] . "</br>";
-            echo "Start Date:" . $row['start_date'] . "</br>";
-            echo "Present Address: " . $row['present_address'] . "</br>";
-            echo "City: " . $row['city'] . "</br>";
-            echo "State: " . $row['state'] . "</br>";
-            echo "Zip: " . $row['zip'] . "</br>";
-            echo "Mobile: " . $row['mobile'] . "</br>";
-            echo "Alt Phone: " . $row['phone_alt'] . "</br>";
-            echo "Can we text: " . $row['txt'] . "</br>";
-            echo "Email: " . $row['email'] . "</br>";
-            echo "Alt Email: " . $row['email_alt'] . "</br>";
-            echo "Education Level: " . $row['education_level'] . "</br>";
-            echo "High School Name: " . $row['hs_name'] . "</br>";
-            echo "High School City: " . $row['hs_city'] . "</br>";
-            echo "Homeschooled (y or n): " . $row['homeschool'] . "</br>";
-            echo "Homeschool Endorsed: " . $row['home_endorse'] . "</br>";
-            echo "College Name: " . $row['college_name'] . "</br>";
-            echo "College City: " . $row['college_city'] . "</br>";
-            echo "Degree: " . $row['degree'] . "</br>";
-            echo "Previously Attend Cosmo School: " . $row['previous_attend'] . "</br>";
-            echo "Transfer Credits (y or n): " . $row['transfer'] . "</br>";
-            echo "Cosmo School Name: " . $row['cs_name'] . "</br>";
-            echo "Cosmo School City: " . $row['cs_city'] . "</br>";
-            echo "Date Submitted: " . $row['date'] . "</br>";
-            echo "ID: " . $row['id'] . "</p>";
-            }
-            mysqli_close($con);
+            
+            mysqli_close($conn);
             
             // In case any of our lines are larger than 70 characters, we should use wordwrap()
             $message = wordwrap($message, 70, "\r\n");
             
             // Send
-            mail('ty.s.jackson@gmail.com', 'Test Email', $message);            
+            mail('email@example.com', 'Test Email', $message);            
 
         }        
 
